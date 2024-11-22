@@ -1,0 +1,24 @@
+{
+    "llm": {
+        "replies": [
+            "Joe lives in Berlin."
+        ],
+        "meta": [
+            {
+                "model": "gpt-4o-2024-08-06",
+                "index": 0,
+                "finish_reason": "stop",
+                "usage": {
+                    "completion_tokens": 5,
+                    "prompt_tokens": 50,
+                    "total_tokens": 55,
+                    "completion_tokens_details": null,
+                    "prompt_tokens_details": null
+                }
+            }
+        ]
+    },
+    "prompt_builder": {
+        "prompt": "\n    Given these documents, answer the question.\nDocuments:\n    \n        Joe lives in Berlin\n    \n        Joe is a software engineer\n    \n\n    \nQuestion: Where does Joe live?\n    \nAnswer:\n    "
+    }
+}
