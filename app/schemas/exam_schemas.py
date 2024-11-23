@@ -21,6 +21,8 @@ class InputCreateExam(BaseModel):
     exam_id: str
     title: str
     description:str
+    user_summary:str
+    user_roadmap:List
     file_upload: List[str] # List of file paths or URLs
     ratio_question: Dict[str, float] = { "single_choice":0.3 ,"multiple_choice": 0.4, "essay": 0.3}
 
