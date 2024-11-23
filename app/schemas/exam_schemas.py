@@ -10,8 +10,17 @@ class Question(BaseModel):
     score: Optional[int] = None
     
 class InputCreateExam(BaseModel):
+    """_summary_
+        exam_id: str
+    title: str
+    file_upload: List[str] # List of file paths or URLs
+    ratio_question: Dict[str, float] = { "single_choice":0.3 ,"multiple_choice": 0.4, "essay": 0.3}
+    Args:
+        BaseModel (_type_): _description_
+    """
     exam_id: str
     title: str
+    description:str
     file_upload: List[str] # List of file paths or URLs
     ratio_question: Dict[str, float] = { "single_choice":0.3 ,"multiple_choice": 0.4, "essay": 0.3}
 

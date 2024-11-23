@@ -13,6 +13,7 @@ from haystack import component
 from haystack import Document
 import os
 from dotenv import load_dotenv
+from haystack.components.embedders import AzureOpenAIDocumentEmbedder
 load_dotenv()
 @component
 class SummaryKeywordPipeLine:
@@ -52,15 +53,20 @@ class DocumentPipeline(Pipeline):
     def __init__(self):
         super().__init__()
         self.document_store = ElasticsearchDocumentStore()
+        self.embeder=AzureOpenAIDocumentEmbedder(azure_endpoint=os.getenv("AZURE_ENDPOINT"),
+                        api_key=Secret.from_token(os.getenv("AZURE_OPENAI_KEY")),
+                        azure_deployment=os.getenv("EMBEDDING_MODEL"),meta_fields_to_embed=["summary","keywords"])
         self.add_component("converter", AzureOCRDocumentConverter(endpoint=os.environ["AZURE_DOC_ENDPOINT"], api_key=Secret.from_token(os.environ["AZURE_DOC_KEY"])))
         self.add_component("cleaner", DocumentCleaner())
         self.add_component("splitter", DocumentSplitter(split_by="passage", split_length=5))
         self.add_component("summary_keyword", SummaryKeywordPipeLine())
-        # self.add_component("writer", DocumentWriter(document_store=self.document_store))
+        self.add_component("embeder", self.embeder)
+        self.add_component("writer", DocumentWriter(document_store=self.document_store))
         self.connect("converter", "cleaner")
         self.connect("cleaner", "splitter")
         self.connect("splitter", "summary_keyword")
-        # self.connect("summary_keyword", "writer")
+        self.connect("summary_keyword", "embeder")
+        self.connect("embeder", "writer")
 
 # Example usage
 if __name__ == "__main__":
