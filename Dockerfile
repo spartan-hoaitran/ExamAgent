@@ -15,8 +15,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy the application code to the container
 COPY . .
 
-# Expose the port that FastAPI runs on
-EXPOSE 8000
+
 WORKDIR /app
 # Command to run the FastAPI application
 CMD ["python3", "main.py"]
