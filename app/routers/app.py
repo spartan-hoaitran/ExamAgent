@@ -20,14 +20,14 @@ api= FastAPI(
 )
  
 
-if settings.BACKEND_CORS_ORIGINS:
-    api.add_middleware(
-        CORSMiddleware,
-        allow_origins=[str(origin) for origin in settings.BACKEND_CORS_ORIGINS],
-        allow_credentials=True,
-        allow_methods=["*"],
-        allow_headers=["*"],
-    )
+# if settings.BACKEND_CORS_ORIGINS:
+#     api.add_middleware(
+#         CORSMiddleware,
+#         allow_origins=[str(origin) for origin in settings.BACKEND_CORS_ORIGINS],
+#         allow_credentials=True,
+#         allow_methods=["*"],
+#         allow_headers=["*"],
+#     )
 @api.get(f"{settings.API_STR}")
 async def health_method():
     return JSONResponse(content="Server's still alive")

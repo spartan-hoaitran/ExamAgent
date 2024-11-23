@@ -1,31 +1,34 @@
 
 from functools import lru_cache
 import os
-from typing import Optional, Union
-from pydantic_settings import BaseSettings, SettingsConfigDict
 os.environ["env_path"] = os.path.join(os.path.dirname(__file__), "..", "config/.env")
+from typing import Union, List
+from pydantic_settings import BaseSettings  # Import BaseSettings from pydantic-settings
+from pydantic import Field 
+
 class Settings(BaseSettings):
     # General settings
-    API_STR: str
-    SECRET_KEY: str
-    PROJECT_NAME: str
-    PROJECT_DESCRIPTION: str
-    PROJECT_VERSION: str
-    SERVER_PORT:int
-    BACKEND_CORS_ORIGINS: Union[str, None] = ["*"]
+    API_STR: str = Field(..., env="API_STR")
+    SECRET_KEY: str = Field(..., env="SECRET_KEY")
+    PROJECT_NAME: str = Field(..., env="PROJECT_NAME")
+    PROJECT_DESCRIPTION: str = Field(..., env="PROJECT_DESCRIPTION")
+    PROJECT_VERSION: str = Field(..., env="PROJECT_VERSION")
+    SERVER_PORT: int = Field(..., env="SERVER_PORT")
     
-    # Database settings
-    POSTGRES_SERVER: str
-    POSTGRES_USER: str
-    POSTGRES_DB: str
 
     # Azure settings
-    AZURE_OPENAI_ENDPOINT: str
-    AZURE_API_VERSION: str
-    CHAT_COMPLETIONS_MODEL: str
-    AZURE_OPENAI_KEY:str
+    AZURE_OPENAI_ENDPOINT: str = Field(..., env="AZURE_OPENAI_ENDPOINT")
+    AZURE_API_VERSION: str = Field(..., env="AZURE_API_VERSION")
+    CHAT_COMPLETIONS_MODEL: str = Field(..., env="CHAT_COMPLETIONS_MODEL")
+    AZURE_OPENAI_KEY: str = Field(..., env="AZURE_OPENAI_KEY")
 
-    model_config = SettingsConfigDict(env_file=os.environ["env_path"], env_file_encoding="utf-8")
+    class Config:
+        # Read from an .env file if available; otherwise, fallback to os.environ
+        env_file = os.environ.get("env_path", ".env")  # Fallback to ".env" if "env_path" not set
+        env_file_encoding = "utf-8"
+        env_ignore_empty = True
+        extra = "ignore"
+
 
 
 @lru_cache()
