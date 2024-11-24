@@ -53,10 +53,14 @@ async def create_exam(input_create_exam: InputCreateExam):
 
 
 # Evaluate an exam submission
-@router.post("/exams/evaluate/", response_model=ExamResult)
+# @router.post("/exams/evaluate/", response_model=ExamResult)
+@router.post("/exams/evaluate/")
 async def evaluate_exam(submission: ExamSubmission):
     # For simplicity, we'll just return a dummy result
-    total_score = 0
+    # total_score = 0
     
-    result=ExamResult(exam_id=submission.exam_id, questions=submission.questions, total_score=total_score, feedback="Well done!")
-    return result
+    # result=ExamResult(exam_id=submission.exam_id, questions=submission.questions, total_score=total_score, feedback="Well done!")
+    # return result
+    exam_service=ExamService()
+    results=exam_service.evaluate_exam_handler(submission)
+    return results

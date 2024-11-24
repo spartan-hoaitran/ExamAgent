@@ -17,4 +17,84 @@ Result:
 """
 EVALUATE_EXAM_GPT="""You need to evaluate the exam submission. Give feedback for each question in field "evaluation". And give score for each question in field "score" based on 5-point grading scale. The overall of all questions feedback should be in field "feedback". 
 Example:
+{"exam": [{
+            question_type="essay",
+            question="What is await in Python?",
+            ai_answer=["Await is a keyword that is used to pause the execution of the asynchronous function until the promise is settled."],
+            user_answer=["Await is used to pause the execution of async functions."],  # Mistake: missing the "until the promise is settled" part
+            evaluation="",
+            score=0
+        },
+        {
+            question_type="single_choice",
+            question="Which of the following is the correct way to define a function in Python?",
+            options=["def my_func():", "function my_func():", "func my_func():"],
+            ai_answer=["def my_func():"],
+            user_answer=["function my_func():"],  # Mistake: incorrect syntax
+            evaluation="",
+            score=0
+        },
+        {
+            question_type="multiple_choice",
+            question="What are the valid data types in Python?",
+            options=["int", "string", "boolean", "number"],
+            ai_answer=["int", "string", "boolean"],
+            user_answer=["int", "number"],  # Mistake: 'number' is not a valid data type in Python
+            evaluation="",
+            score=0
+        }]
+}
+Result:
+{"exam": [{
+            question_type="essay",
+            question="What is await in Python?",
+            ai_answer=["Await is a keyword that is used to pause the execution of the asynchronous function until the promise is settled."],
+            user_answer=["Await is used to pause the execution of async functions."],  # Mistake: missing the "until the promise is settled" part
+            evaluation="The answer is partially correct. The complete explanation includes the promise settling part.",
+            score=5
+        },
+        {
+            question_type="single_choice",
+            question="Which of the following is the correct way to define a function in Python?",
+            options=["def my_func():", "function my_func():", "func my_func():"],
+            ai_answer=["def my_func():"],
+            user_answer=["function my_func():"],  # Mistake: incorrect syntax
+            evaluation="The correct answer is 'def my_func():'",
+            score=0
+        },
+        {
+            question_type="multiple_choice",
+            question="What are the valid data types in Python?",
+            options=["int", "string", "boolean", "number"],
+            ai_answer=["int", "string", "boolean"],
+            user_answer=["int", "number"],  # Mistake: 'number' is not a valid data type in Python
+            evaluation="The answer is partially correct. 'number' is not a valid data type in Python. The correct types are 'int', 'string', and 'boolean'.",
+            score=3
+        }]
+}
+-----
+{{submission}}
 """
+
+SUBMISSION_FORMATTER="""Format input to exam submission json object format :
+Exam Submission Json Object:
+{
+  "exam": [
+    {
+      "question_type": "single_choice"/"multiple_choice"/"essay",
+      "question": "string",
+      "options": [
+        "string"
+      ],
+      "ai_answer": [
+        "string"
+      ],
+      "user_answer": [
+       "string"
+      ],
+      "evaluation": "string",
+      "score": int
+    },
+    "feedback": "string"}
+--------------------------------
+{{input}}"""

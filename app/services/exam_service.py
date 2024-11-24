@@ -2,15 +2,15 @@ import os
 from urllib.parse import urlparse
 import uuid
 import requests
-from schemas.exam_schemas import InputCreateExam, Question
-from third_parties.create_question_pipeline import CreateQuestionPipeline
+from schemas.exam_schemas import ExamSubmission, InputCreateExam, Question
+from third_parties.question_pipeline import QuestionPipeline
 from third_parties.document_pipeline import DocumentPipeline
 
 
 class ExamService():
     def __init__(self):
         self.document_pipeline=DocumentPipeline()
-        self.create_question_pipeline=CreateQuestionPipeline()
+        self.question_pipeline=QuestionPipeline()
 
     def create_exam_handler(self, exam: InputCreateExam):
         exam_id=str(uuid.uuid4())
@@ -20,7 +20,7 @@ class ExamService():
             for file in os.listdir(exam_id):
                 list_file.append(f"{exam_id}/{file}")
         self.document_pipeline.run({"converter":{"sources":list_file}})
-        single,multiple,essay=self.create_question_pipeline.create_question(exam)
+        single,multiple,essay=self.question_pipeline.create_question(exam)
         result=[]
         print("/////////////////////////////////")
         print(single)
@@ -51,5 +51,6 @@ class ExamService():
             else:
                 print(f"Failed to download the file {filename}. Status code:", response.status_code)
     
-    def evaluate_exam_handler(self, submission):
-        pass
+    def evaluate_exam_handler(self, submission:ExamSubmission):
+        result=self.question_pipeline.evaluate_question(submission)
+        return result

@@ -12,7 +12,7 @@ from haystack.components.generators import AzureOpenAIGenerator
 import re
 import json
 from schemas.exam_schemas import InputCreateExam
-from .prompt import CREATE_QUESTION_GPT, QUESTION_FORMATTER
+from .prompt import CREATE_QUESTION_GPT, EVALUATE_EXAM_GPT, QUESTION_FORMATTER, SUBMISSION_FORMATTER
 load_dotenv()
 def json_object_formatter(input_string):
         """
@@ -39,7 +39,29 @@ def json_object_formatter(input_string):
                 return None
         except Exception as e:
             return None
-class CreateQuestionPipeline():
+def json_evaluate_object_formatter(input_string):
+        """
+        Extracts the JSON block that starts with ```json and ends with ```.
+
+        Args:
+            input_string (str): The input string containing the JSON block.
+
+        Returns:
+            str: The extracted JSON block, or an error message if no block is found.
+        """
+        # Use regex to capture everything between ```json and ```
+        match = re.search(r'```json(.*?)```', input_string, re.DOTALL)
+        try:
+            if match:
+                # Extract and return the content, stripped of leading/trailing spaces
+                result=json.loads(match.group(1).strip())
+                return result
+            else:
+                # Inform the user if no match is found
+                return None
+        except Exception as e:
+            return None
+class QuestionPipeline():
     def __init__(self):
         pass
 
@@ -48,7 +70,7 @@ class CreateQuestionPipeline():
         print("-----------------")
         pipeline=Pipeline()
         document_store = QdrantDocumentStore(
-        url=os.getenv("QDRANT_API_URL"),api_key=Secret.from_env_var("QDRANT_API_KEY"),embedding_dim=1536,index=os.getenv("QDRANT_INDEX")
+        url=os.getenv("QDRANT_API_URL"),embedding_dim=1536,index=os.getenv("QDRANT_INDEX")
         )
         embedder=AzureOpenAITextEmbedder(azure_endpoint=os.getenv("AZURE_ENDPOINT"),
                         api_key=Secret.from_token(os.getenv("AZURE_OPENAI_KEY")),
@@ -104,5 +126,33 @@ class CreateQuestionPipeline():
         results=json_object_formatter(results["formatter_generator"]["replies"][0])
         return results
     
+    def evaluate_question(self,questions):
+        pipeline=Pipeline()
+        client = AzureOpenAIGenerator(azure_endpoint=os.getenv("AZURE_ENDPOINT"),
+                        api_key=Secret.from_token(os.getenv("AZURE_OPENAI_KEY")),
+                        azure_deployment=os.getenv("CHAT_COMPLETIONS_MODEL"))
+        formatter_client = AzureOpenAIGenerator(azure_endpoint=os.getenv("AZURE_ENDPOINT"),
+                        api_key=Secret.from_token(os.getenv("AZURE_OPENAI_KEY")),
+                        azure_deployment=os.getenv("CHAT_COMPLETIONS_MODEL"))
+        prompt_builder = PromptBuilder(template=EVALUATE_EXAM_GPT)
+        formatter_prompt_builder = PromptBuilder(template=SUBMISSION_FORMATTER)
+        pipeline.add_component("prompt_builder", prompt_builder)
+        pipeline.add_component("generator", client)
+        pipeline.add_component("formatter_prompt_builder", formatter_prompt_builder)
+        pipeline.add_component("formatter_generator", formatter_client)
+        pipeline.connect("prompt_builder", "generator")
+        pipeline.connect("generator.replies", "formatter_prompt_builder")
+        pipeline.connect("formatter_prompt_builder", "formatter_generator")
+        results=pipeline.run({"prompt_builder": {"submission":questions}})
+        results=json_evaluate_object_formatter(results["formatter_generator"]["replies"][0])
+        print(results)
+        total_score=0
+        for question in results['exam']:
+            while "score" not in question:
+                question_retry=pipeline.run({"prompt_builder": {"submission":question}})
+                question_retry=json_evaluate_object_formatter(question_retry["formatter_generator"]["replies"][0])
+            total_score+=question["score"]
+        results["total_score"]=f"{total_score}/{(len(results['exam'])*5)}"
+        return results
 
 
