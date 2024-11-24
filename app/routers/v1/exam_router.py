@@ -63,4 +63,5 @@ async def evaluate_exam(submission: ExamSubmission):
     # return result
     exam_service=ExamService()
     results=exam_service.evaluate_exam_handler(submission)
+    print(results)
     return results
