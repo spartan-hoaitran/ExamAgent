@@ -44,3 +44,6 @@ class ExamService():
                 print(f"File downloaded successfully as {filename}")
             else:
                 print(f"Failed to download the file {filename}. Status code:", response.status_code)
+    
+    def evaluate_exam_handler(self, submission):
+        pass

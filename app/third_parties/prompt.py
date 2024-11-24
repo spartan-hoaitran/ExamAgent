@@ -2,7 +2,7 @@ CREATE_QUESTION_GPT="""You need to create {{number_of_questions}} of {{question_
 1 - The question should be followed the rules is given below:
 {{rule}}
 2 - The question must be about the documents:{{document}}.
-Output format: [{"question":"string","choices":[],"correct_answer":["string"]}]
+Output format: [{"question":"string","choices":["string"],"correct_answer":["string"]}]
 """
 
 CREATE_QUESTION_GEMINI=""""""
