@@ -1,5 +1,4 @@
 from haystack import Pipeline
-from haystack.document_stores.in_memory import InMemoryDocumentStore
 from haystack.components.converters import AzureOCRDocumentConverter
 from haystack.components.preprocessors import DocumentCleaner
 from haystack.components.preprocessors import DocumentSplitter
@@ -8,7 +7,9 @@ from haystack.utils import Secret
 from haystack import component
 from haystack.components.builders import PromptBuilder
 from haystack.components.generators import AzureOpenAIGenerator
-from haystack_integrations.document_stores.elasticsearch import ElasticsearchDocumentStore
+from haystack_integrations.document_stores.qdrant import QdrantDocumentStore
+
+
 from haystack import component
 from haystack import Document
 import os
@@ -52,7 +53,9 @@ class SummaryKeywordPipeLine:
 class DocumentPipeline(Pipeline):
     def __init__(self):
         super().__init__()
-        self.document_store = ElasticsearchDocumentStore()
+        self.document_store = QdrantDocumentStore(
+        "localhost:6333",embedding_dim=1536
+        )
         self.embeder=AzureOpenAIDocumentEmbedder(azure_endpoint=os.getenv("AZURE_ENDPOINT"),
                         api_key=Secret.from_token(os.getenv("AZURE_OPENAI_KEY")),
                         azure_deployment=os.getenv("EMBEDDING_MODEL"),meta_fields_to_embed=["summary","keywords"])
@@ -74,4 +77,4 @@ if __name__ == "__main__":
 
   document_pipeline = DocumentPipeline()
   result=document_pipeline.run({"converter": {"sources": file_names}})
-  print(result["summary_keyword"]["documents"][0].meta)
+  # print(result["summary_keyword"]["documents"][0].meta)
