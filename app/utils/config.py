@@ -22,6 +22,11 @@ class Settings(BaseSettings):
     CHAT_COMPLETIONS_MODEL: str = Field(..., env="CHAT_COMPLETIONS_MODEL")
     AZURE_OPENAI_KEY: str = Field(..., env="AZURE_OPENAI_KEY")
 
+    QDRANT_API_URL: str = Field(..., env="QDRANT_API_URL")
+    QDRANT_API_KEY: str = Field(..., env="QDRANT_API_KEY")
+    QDRANT_INDEX: str = Field(..., env="QDRANT_INDEX")
+    
+
     class Config:
         # Read from an .env file if available; otherwise, fallback to os.environ
         env_file = os.environ.get("env_path", ".env")  # Fallback to ".env" if "env_path" not set

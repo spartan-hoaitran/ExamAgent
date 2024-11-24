@@ -48,8 +48,7 @@ class CreateQuestionPipeline():
         print("-----------------")
         pipeline=Pipeline()
         document_store = QdrantDocumentStore(
-            "localhost:6333",
-            embedding_dim=1536
+        url=os.getenv("QDRANT_API_URL"),api_key=Secret.from_env_var("QDRANT_API_KEY"),embedding_dim=1536,index=os.getenv("QDRANT_INDEX")
         )
         embedder=AzureOpenAITextEmbedder(azure_endpoint=os.getenv("AZURE_ENDPOINT"),
                         api_key=Secret.from_token(os.getenv("AZURE_OPENAI_KEY")),
