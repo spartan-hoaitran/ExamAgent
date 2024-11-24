@@ -23,7 +23,7 @@ class ExamService():
         single,multiple,essay=self.question_pipeline.create_question(exam)
         result=[]
         print("/////////////////////////////////")
-        print(single)
+        print(multiple)
         for question in single:
             result.append(Question(question_type="single_choice",question=question["question"],options=question["choices"],ai_answer=question["correct_answer"]))
         for question in multiple:
