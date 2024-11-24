@@ -67,17 +67,17 @@ class CreateQuestionPipeline():
         single_choice_questions=[]
         multiple_choice_questions=[]
         essay_questions=[]
-        # while exam.total_question>(len(single_choice_questions)+len(multiple_choice_questions)+len(essay_questions)):
-        for doc in docs:
-            question=self.create_question_by_gpt(doc,exam.description,question_type="single_choice",number_of_questions=int(total_questions_single/len(docs)))
-            if question:
-                single_choice_questions.extend(question)
-            question=self.create_question_by_gpt(doc,exam.description,question_type="multiple_choice",number_of_questions=int(total_questions_multiple/len(docs)))
-            if question:
-                multiple_choice_questions.extend(question)
-            question=self.create_question_by_gpt(doc,exam.description,question_type="essay",number_of_questions=int(total_questions_essay/len(docs)))
-            if question:
-                essay_questions.extend(question)
+        while exam.total_question>(len(single_choice_questions)+len(multiple_choice_questions)+len(essay_questions)):
+            for doc in docs:
+                question=self.create_question_by_gpt(doc,exam.description,question_type="single_choice",number_of_questions=int(total_questions_single/len(docs)))
+                if question:
+                    single_choice_questions.extend(question)
+                question=self.create_question_by_gpt(doc,exam.description,question_type="multiple_choice",number_of_questions=int(total_questions_multiple/len(docs)))
+                if question:
+                    multiple_choice_questions.extend(question)
+                question=self.create_question_by_gpt(doc,exam.description,question_type="essay",number_of_questions=int(total_questions_essay/len(docs)))
+                if question:
+                    essay_questions.extend(question)
         
         return single_choice_questions[:total_questions_single],multiple_choice_questions[:total_questions_multiple],essay_questions[:total_questions_essay]
         

@@ -7,7 +7,7 @@ class Question(BaseModel):
     options:Optional[List[str]] = []
     ai_answer: Optional[List[str]]= ["Await is a keyword that is used to pause the execution of the asynchronous function until the promise is settled."]
     user_answer: Optional[List[str]]= []
-    evaluation: Optional[Dict[str, str]] = None
+    evaluation: Optional[str] = None
     score: Optional[int] = None
     
 class InputCreateExam(BaseModel):

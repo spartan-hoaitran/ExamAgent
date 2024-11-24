@@ -15,9 +15,11 @@ class ExamService():
     def create_exam_handler(self, exam: InputCreateExam):
         exam_id=str(uuid.uuid4())
         self.download_file(exam_id,exam.file_upload)
+        list_file=[]
         if len(exam.file_upload)>0: 
             for file in os.listdir(exam_id):
-                self.document_pipeline.run(f"{exam_id}/{file}")
+                list_file.append(f"{exam_id}/{file}")
+        self.document_pipeline.run({"converter":{"sources":list_file}})
         single,multiple,essay=self.create_question_pipeline.create_question(exam)
         result=[]
         print("/////////////////////////////////")
