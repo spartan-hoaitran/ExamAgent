@@ -15,3 +15,6 @@ Result:
 Input: {{input}}
 Result:
 """
+EVALUATE_EXAM_GPT="""You need to evaluate the exam submission. Give feedback for each question in field "evaluation". And give score for each question in field "score" based on 5-point grading scale. The overall of all questions feedback should be in field "feedback". 
+Example:
+"""

@@ -1,4 +1,5 @@
 import os
+from urllib.parse import urlparse
 import uuid
 import requests
 from schemas.exam_schemas import InputCreateExam, Question
@@ -33,7 +34,10 @@ class ExamService():
         if len(urls)>0: os.makedirs(exam_id, exist_ok=True)
         for url in urls:
             # Get the filename from the URL
-            filename = os.path.basename(url)
+            parsed_url = urlparse(url)
+
+            # Extract the filename from the path
+            filename = os.path.basename(parsed_url.path)
             # Send a GET request to the URL
             response = requests.get(url)
             # Check if the request was successful

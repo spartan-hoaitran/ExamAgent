@@ -2,7 +2,7 @@
 from functools import lru_cache
 import os
 os.environ["env_path"] = os.path.join(os.path.dirname(__file__), "..", "config/.env")
-from typing import Union, List
+from typing import Optional, Union, List
 from pydantic_settings import BaseSettings  # Import BaseSettings from pydantic-settings
 from pydantic import Field 
 
@@ -23,7 +23,7 @@ class Settings(BaseSettings):
     AZURE_OPENAI_KEY: str = Field(..., env="AZURE_OPENAI_KEY")
 
     QDRANT_API_URL: str = Field(..., env="QDRANT_API_URL")
-    QDRANT_API_KEY: str = Field(..., env="QDRANT_API_KEY")
+    QDRANT_API_KEY: Optional[str] = Field(..., env="QDRANT_API_KEY") or None
     QDRANT_INDEX: str = Field(..., env="QDRANT_INDEX")
     
 

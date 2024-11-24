@@ -6,6 +6,7 @@ class Question(BaseModel):
     question:str = "What is await in Python?"
     options:Optional[List[str]] = []
     ai_answer: Optional[List[str]]= ["Await is a keyword that is used to pause the execution of the asynchronous function until the promise is settled."]
+    user_answer: Optional[List[str]]= []
     evaluation: Optional[Dict[str, str]] = None
     score: Optional[int] = None
     
@@ -29,8 +30,7 @@ class Exam(BaseModel):
     questions: List[Question]
     
 class ExamSubmission(BaseModel):
-    questions: List[Question]
-    answers: List[str]
+    exam: List[Question]
     
 class ExamResult(BaseModel):
     questions: List[Question]
