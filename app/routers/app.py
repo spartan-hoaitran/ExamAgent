@@ -19,7 +19,10 @@ api= FastAPI(
     version=settings.PROJECT_VERSION,
 )
  
-
+api.add_middleware(
+    CORSMiddleware,
+    allow_origins=['*']
+)
 # if settings.BACKEND_CORS_ORIGINS:
 #     api.add_middleware(
 #         CORSMiddleware,
