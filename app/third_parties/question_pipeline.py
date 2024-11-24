@@ -90,6 +90,16 @@ class QuestionPipeline():
         multiple_choice_questions=[]
         essay_questions=[]
         while exam.total_question>(len(single_choice_questions)+len(multiple_choice_questions)+len(essay_questions)):
+            if len(docs)==0:
+                question=self.create_question_by_gpt(None,exam.description,question_type="single_choice",number_of_questions=int(total_questions_single/len(docs)))
+                if question:
+                    single_choice_questions.extend(question)
+                question=self.create_question_by_gpt(None,exam.description,question_type="multiple_choice",number_of_questions=int(total_questions_multiple/len(docs)))
+                if question:
+                    multiple_choice_questions.extend(question)
+                question=self.create_question_by_gpt(None,exam.description,question_type="essay",number_of_questions=int(total_questions_essay/len(docs)))
+                if question:
+                    essay_questions.extend(question)
             for doc in docs:
                 question=self.create_question_by_gpt(doc,exam.description,question_type="single_choice",number_of_questions=int(total_questions_single/len(docs)))
                 if question:
