@@ -43,10 +43,10 @@ router = APIRouter()
 def create_exam(input_create_exam: InputCreateExam):
     # Generate questions based on the input
     # For simplicity, we'll just return a dummy exam
-    print("Request:",input_create_exam)
+    print("Request from create_exams:",input_create_exam)
     exam_service= ExamService()
     questions=exam_service.create_exam_handler(input_create_exam)
-    print("Response:",questions)
+    print("Response for create_exams:",questions)
     return Exam(
         questions= questions
     )
@@ -57,7 +57,8 @@ def create_exam(input_create_exam: InputCreateExam):
 # @router.post("/exams/evaluate/", response_model=ExamResult)
 @router.post("/exams/evaluate/")
 def evaluate_exam(submission: ExamSubmission):
+    print("Request from /exams/evaluate/:",submission)
     exam_service=ExamService()
     results=exam_service.evaluate_exam_handler(submission)
-    print(results)
+    print("Response for /exams/evaluate/",results)
     return results
