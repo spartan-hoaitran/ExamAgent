@@ -82,13 +82,15 @@ class QuestionPipeline():
         return results["retriever"]["documents"]
     
     def create_question(self,exam:InputCreateExam):
-        docs=self.find_similar_documents(exam.description)
+        if len(exam.file_upload)>0:
+            docs=self.find_similar_documents(exam.description)
         total_questions_single=int(exam.total_question*exam.ratio_question["single_choice"])
         total_questions_multiple=int(exam.total_question*exam.ratio_question["multiple_choice"])
         total_questions_essay=int(exam.total_question*exam.ratio_question["essay"])
         single_choice_questions=[]
         multiple_choice_questions=[]
         essay_questions=[]
+        print("Start create single question")
         while len(single_choice_questions)<total_questions_single:
             if len(docs)==0:
                 question=self.create_question_by_gpt(None,exam.description,question_type="single_choice",number_of_questions=int(total_questions_single))
@@ -97,6 +99,7 @@ class QuestionPipeline():
                     question=self.create_question_by_gpt(doc,exam.description,question_type="single_choice",number_of_questions=int(total_questions_single/len(docs)))
             if question:
                 single_choice_questions.extend(question)
+        print("Start create multiple question")
         while len(multiple_choice_questions)<total_questions_multiple:
             if len(docs)==0:
                 question=self.create_question_by_gpt(None,exam.description,question_type="multiple_choice",number_of_questions=int(total_questions_multiple))
@@ -104,7 +107,8 @@ class QuestionPipeline():
                 for doc in docs:
                     question=self.create_question_by_gpt(doc,exam.description,question_type="multiple_choice",number_of_questions=int(total_questions_multiple/len(docs)))
             if question:
-                multiple_choice_questions.extend(question)       
+                multiple_choice_questions.extend(question)     
+        print("Start create essay question")  
         while len(essay_questions)<total_questions_essay:
             if len(docs)==0:
                 question=self.create_question_by_gpt(None,exam.description,question_type="essay",number_of_questions=int(total_questions_essay))
@@ -113,7 +117,7 @@ class QuestionPipeline():
                     question=self.create_question_by_gpt(doc,exam.description,question_type="essay",number_of_questions=int(total_questions_essay/len(docs)))
             if question:
                 essay_questions.extend(question)
-                
+        print("End create question")
         return single_choice_questions,multiple_choice_questions,essay_questions
         
     def create_question_by_gpt(self,document,description_of_exam:str,question_type,number_of_questions:int):

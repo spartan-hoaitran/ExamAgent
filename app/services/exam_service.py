@@ -22,6 +22,7 @@ class ExamService():
                 list_file.append(f"{exam_id}/{file}")
         if len(list_file)>0:
             self.document_pipeline.run({"converter":{"sources":list_file}})
+        print('Start create exam')
         single,multiple,essay= self.question_pipeline.create_question(exam)
         result=[]
         print("/////////////////////////////////")
