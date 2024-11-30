@@ -84,6 +84,7 @@ class QuestionPipeline():
     def create_question(self,exam:InputCreateExam):
         if len(exam.file_upload)>0:
             docs=self.find_similar_documents(exam.description)
+        else: docs=[]
         total_questions_single=int(exam.total_question*exam.ratio_question["single_choice"])
         total_questions_multiple=int(exam.total_question*exam.ratio_question["multiple_choice"])
         total_questions_essay=int(exam.total_question*exam.ratio_question["essay"])
