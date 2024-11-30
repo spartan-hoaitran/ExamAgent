@@ -3,9 +3,9 @@ from typing import Dict, List, Optional
 
 class Question(BaseModel):
     question_type:str = "essay" # single_choice, multiple_choice, essay
-    question:str = "What is await in Python?"
+    question:str = "What is in Python?"
     options:Optional[List[str]] = []
-    ai_answer: Optional[List[str]]= ["Await is a keyword that is used to pause the execution of the asynchronous function until the promise is settled."]
+    ai_answer: Optional[List[str]]= ["is a keyword that is used to pause the execution of the asynchronous function until the promise is settled."]
     user_answer: Optional[List[str]]= []
     evaluation: Optional[str] = None
     score: Optional[int] = None

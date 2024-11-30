@@ -34,7 +34,7 @@ api.add_middleware(
 #         allow_headers=["*"],
 #     )
 @api.get(f"{settings.API_STR}")
-async def health_method():
+def health_method():
     return JSONResponse(content="Server's still alive")
 api.include_router(exam_router, prefix=settings.API_STR, tags=["Exam API"])
 # api.include_router(service_router, prefix=settings.API_STR, tags=["System Service API"])

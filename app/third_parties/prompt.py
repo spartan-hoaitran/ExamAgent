@@ -19,9 +19,9 @@ EVALUATE_EXAM_GPT="""You need to evaluate the exam submission. Give feedback for
 Example:
 {"exam": [{
             question_type="essay",
-            question="What is await in Python?",
-            ai_answer=["Await is a keyword that is used to pause the execution of the asynchronous function until the promise is settled."],
-            user_answer=["Await is used to pause the execution of async functions."],  # Mistake: missing the "until the promise is settled" part
+            question="What is in Python?",
+            ai_answer=["is a keyword that is used to pause the execution of the asynchronous function until the promise is settled."],
+            user_answer=["is used to pause the execution of functions."],  # Mistake: missing the "until the promise is settled" part
             evaluation="",
             score=0
         },
@@ -47,9 +47,9 @@ Example:
 Result:
 {"exam": [{
             question_type="essay",
-            question="What is await in Python?",
-            ai_answer=["Await is a keyword that is used to pause the execution of the asynchronous function until the promise is settled."],
-            user_answer=["Await is used to pause the execution of async functions."],  # Mistake: missing the "until the promise is settled" part
+            question="What is in Python?",
+            ai_answer=["is a keyword that is used to pause the execution of the asynchronous function until the promise is settled."],
+            user_answer=["is used to pause the execution of functions."],  # Mistake: missing the "until the promise is settled" part
             evaluation="The answer is partially correct. The complete explanation includes the promise settling part.",
             score=5
         },

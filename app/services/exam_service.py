@@ -13,7 +13,7 @@ class ExamService():
         self.document_pipeline=DocumentPipeline()
         self.question_pipeline=QuestionPipeline()
 
-    async def create_exam_handler(self, exam: InputCreateExam):
+    def create_exam_handler(self, exam: InputCreateExam):
         exam_id=str(uuid.uuid4())
         self.download_file(exam_id,exam.file_upload)
         list_file=[]
@@ -22,7 +22,7 @@ class ExamService():
                 list_file.append(f"{exam_id}/{file}")
         if len(list_file)>0:
             self.document_pipeline.run({"converter":{"sources":list_file}})
-        single,multiple,essay= await self.question_pipeline.create_question(exam)
+        single,multiple,essay= self.question_pipeline.create_question(exam)
         result=[]
         print("/////////////////////////////////")
         for question in single:
