@@ -133,7 +133,7 @@ class QuestionPipeline():
         pipeline.connect("prompt_builder", "generator")
         pipeline.connect("generator.replies", "formatter_prompt_builder")
         pipeline.connect("formatter_prompt_builder", "formatter_generator")
-        results= await pipeline.run({"prompt_builder": {"question_type":question_type,"number_of_questions":number_of_questions,
+        results=pipeline.run({"prompt_builder": {"question_type":question_type,"number_of_questions":number_of_questions,
                         "rule":description_of_exam,
                         "document":document}})
         results=await json_object_formatter(results["formatter_generator"]["replies"][0])
