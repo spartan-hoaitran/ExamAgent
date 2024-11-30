@@ -44,7 +44,7 @@ async def create_exam(input_create_exam: InputCreateExam):
     # Generate questions based on the input
     # For simplicity, we'll just return a dummy exam
     print("Request:",input_create_exam)
-    exam_service=await ExamService()
+    exam_service= ExamService()
     questions=await exam_service.create_exam_handler(input_create_exam)
     print("Response:",questions)
     return Exam(
