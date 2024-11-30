@@ -136,7 +136,7 @@ class QuestionPipeline():
         results=pipeline.run({"prompt_builder": {"question_type":question_type,"number_of_questions":number_of_questions,
                         "rule":description_of_exam,
                         "document":document}})
-        results=await json_object_formatter(results["formatter_generator"]["replies"][0])
+        results= json_object_formatter(results["formatter_generator"]["replies"][0])
         return results
     
     def evaluate_question(self,questions):
