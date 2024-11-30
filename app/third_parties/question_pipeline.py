@@ -66,7 +66,7 @@ class QuestionPipeline():
         pass
 
     
-    def find_similar_documents(self,description:str):
+    async def find_similar_documents(self,description:str):
         print("-----------------")
         pipeline=Pipeline()
         document_store = QdrantDocumentStore(
@@ -81,39 +81,42 @@ class QuestionPipeline():
         results = pipeline.run({"embedder": {"text": description}})
         return results["retriever"]["documents"]
     
-    def create_question(self,exam:InputCreateExam):
-        docs=self.find_similar_documents(exam.description)
+    async def create_question(self,exam:InputCreateExam):
+        docs=await self.find_similar_documents(exam.description)
         total_questions_single=int(exam.total_question*exam.ratio_question["single_choice"])
         total_questions_multiple=int(exam.total_question*exam.ratio_question["multiple_choice"])
         total_questions_essay=int(exam.total_question*exam.ratio_question["essay"])
         single_choice_questions=[]
         multiple_choice_questions=[]
         essay_questions=[]
-        while exam.total_question>(len(single_choice_questions)+len(multiple_choice_questions)+len(essay_questions)):
+        while len(single_choice_questions)<total_questions_single:
             if len(docs)==0:
-                question=self.create_question_by_gpt(None,exam.description,question_type="single_choice",number_of_questions=int(total_questions_single/len(docs)))
-                if question:
-                    single_choice_questions.extend(question)
-                question=self.create_question_by_gpt(None,exam.description,question_type="multiple_choice",number_of_questions=int(total_questions_multiple/len(docs)))
-                if question:
-                    multiple_choice_questions.extend(question)
-                question=self.create_question_by_gpt(None,exam.description,question_type="essay",number_of_questions=int(total_questions_essay/len(docs)))
-                if question:
-                    essay_questions.extend(question)
-            for doc in docs:
-                question=self.create_question_by_gpt(doc,exam.description,question_type="single_choice",number_of_questions=int(total_questions_single/len(docs)))
-                if question:
-                    single_choice_questions.extend(question)
-                question=self.create_question_by_gpt(doc,exam.description,question_type="multiple_choice",number_of_questions=int(total_questions_multiple/len(docs)))
-                if question:
-                    multiple_choice_questions.extend(question)
-                question=self.create_question_by_gpt(doc,exam.description,question_type="essay",number_of_questions=int(total_questions_essay/len(docs)))
-                if question:
-                    essay_questions.extend(question)
+                question=await self.create_question_by_gpt(None,exam.description,question_type="single_choice",number_of_questions=int(total_questions_single))
+            else:
+                for doc in docs:
+                    question=await self.create_question_by_gpt(doc,exam.description,question_type="single_choice",number_of_questions=int(total_questions_single/len(docs)))
+            if question:
+                single_choice_questions.extend(await question)
+        while len(multiple_choice_questions)<total_questions_multiple:
+            if len(docs)==0:
+                question=await self.create_question_by_gpt(None,exam.description,question_type="multiple_choice",number_of_questions=int(total_questions_multiple))
+            else:
+                for doc in docs:
+                    question=await self.create_question_by_gpt(doc,exam.description,question_type="multiple_choice",number_of_questions=int(total_questions_multiple/len(docs)))
+            if question:
+                multiple_choice_questions.extend(await question)       
+        while len(essay_questions)<total_questions_essay:
+            if len(docs)==0:
+                question=await self.create_question_by_gpt(None,exam.description,question_type="essay",number_of_questions=int(total_questions_essay))
+            else:
+                for doc in docs:
+                    question=await self.create_question_by_gpt(doc,exam.description,question_type="essay",number_of_questions=int(total_questions_essay/len(docs)))
+            if question:
+                essay_questions.extend(await question)
+                
+        return single_choice_questions,multiple_choice_questions,essay_questions
         
-        return single_choice_questions[:total_questions_single],multiple_choice_questions[:total_questions_multiple],essay_questions[:total_questions_essay]
-        
-    def create_question_by_gpt(self,document,description_of_exam:str,question_type,number_of_questions:int):
+    async def create_question_by_gpt(self,document,description_of_exam:str,question_type,number_of_questions:int):
         pipeline=Pipeline()
         client = AzureOpenAIGenerator(azure_endpoint=os.getenv("AZURE_ENDPOINT"),
                         api_key=Secret.from_token(os.getenv("AZURE_OPENAI_KEY")),
@@ -130,10 +133,10 @@ class QuestionPipeline():
         pipeline.connect("prompt_builder", "generator")
         pipeline.connect("generator.replies", "formatter_prompt_builder")
         pipeline.connect("formatter_prompt_builder", "formatter_generator")
-        results=pipeline.run({"prompt_builder": {"question_type":question_type,"number_of_questions":number_of_questions,
+        results= await pipeline.run({"prompt_builder": {"question_type":question_type,"number_of_questions":number_of_questions,
                         "rule":description_of_exam,
                         "document":document}})
-        results=json_object_formatter(results["formatter_generator"]["replies"][0])
+        results=await json_object_formatter(results["formatter_generator"]["replies"][0])
         return results
     
     def evaluate_question(self,questions):

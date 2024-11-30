@@ -1,4 +1,5 @@
 import os
+import random
 from urllib.parse import urlparse
 import uuid
 import requests
@@ -12,24 +13,27 @@ class ExamService():
         self.document_pipeline=DocumentPipeline()
         self.question_pipeline=QuestionPipeline()
 
-    def create_exam_handler(self, exam: InputCreateExam):
+    async def create_exam_handler(self, exam: InputCreateExam):
         exam_id=str(uuid.uuid4())
         self.download_file(exam_id,exam.file_upload)
         list_file=[]
         if len(exam.file_upload)>0: 
             for file in os.listdir(exam_id):
                 list_file.append(f"{exam_id}/{file}")
-        self.document_pipeline.run({"converter":{"sources":list_file}})
-        single,multiple,essay=self.question_pipeline.create_question(exam)
+        if len(list_file)>0:
+            self.document_pipeline.run({"converter":{"sources":list_file}})
+        single,multiple,essay= await self.question_pipeline.create_question(exam)
         result=[]
         print("/////////////////////////////////")
-        print(multiple)
         for question in single:
             result.append(Question(question_type="single_choice",question=question["question"],options=question["choices"],ai_answer=question["correct_answer"]))
         for question in multiple:
             result.append(Question(question_type="multiple_choice",question=question["question"],options=question["choices"],ai_answer=question["correct_answer"]))
         for question in essay: 
             result.append(Question(question_type="essay",question=question["question"],ai_answer=question["correct_answer"]))
+        random.shuffle(result) 
+        print("Origin exam have:",len(result))
+        result=result[:exam.total_question]
         return result
         
     def download_file(self,exam_id,urls):
