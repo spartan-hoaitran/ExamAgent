@@ -67,7 +67,7 @@ Result:
             question="What are the valid data types in Python?",
             options=["int", "string", "boolean", "number"],
             ai_answer=["int", "string", "boolean"],
-            user_answer=["int", "number"],  # Mistake: 'number' is not a valid data type in Python
+            user_answer=["int", "number"], 
             evaluation="The answer is partially correct. 'number' is not a valid data type in Python. The correct types are 'int', 'string', and 'boolean'.",
             score=3
         }]
@@ -84,13 +84,13 @@ Exam Submission Json Object:
       "question_type": "single_choice"/"multiple_choice"/"essay",
       "question": "string",
       "options": [
-        "string"
+        "string",
       ],
       "ai_answer": [
-        "string"
+        "string",
       ],
       "user_answer": [
-       "string"
+       "string",
       ],
       "evaluation": "string",
       "score": int

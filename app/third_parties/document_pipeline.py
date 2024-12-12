@@ -49,7 +49,8 @@ class SummaryKeywordPipeLine:
       results=self.pipeline.run({"summary_builder": {"document": doc.content},"keyword_builder": {"document": doc.content,"example_extract_keywords": example_extract_keywords,"keywords_sample": keywords_sample}},include_outputs_from=["summary_generator","keyword_generator"])
       doc.meta={"summary":results["summary_generator"]["replies"][0],"keywords":results["keyword_generator"]["replies"][0]}
     return {"documents":documents}
-
+  
+@component
 class DocumentPipeline(Pipeline):
     def __init__(self):
         super().__init__()
