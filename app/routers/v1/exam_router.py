@@ -39,7 +39,7 @@ router = APIRouter()
 #     return exam
 
 # Create an exam
-@router.post("/create_exams/", response_model=Exam)
+@router.post("/exams/create/", response_model=Exam)
 def create_exam(input_create_exam: InputCreateExam):
     # Generate questions based on the input
     # For simplicity, we'll just return a dummy exam
