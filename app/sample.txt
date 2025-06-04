@@ -1,0 +1,6 @@
+CommentEntity(id=441c6423-a8b1-435f-b117-48721743d118, provider=GITHUB, providerId=63472248, providerNodeId=2IphK4Ok2e,
+ repositoryId=83ce0607-6415-4367-932d-dd16f34af997, body=vyqKEZbVz8, bodyFormat=plain, filePath=NemJ1Ak6I4, diffHunk=OMarjz6FtG,
+  startLine=null, endLine=0, side=null, baseCommitSha=tz9U2pp5xv, commitSha=Hlrl1oIqI5, originalCommitSha=tz9U2pp5xv, 
+  originalStartLine=null, originalEndLine=0, parentCommentId=null, author=PVpBSfYEqz, 
+  reactions={+1=0, -1=0, eyes=0, heart=0, laugh=0, hooray=0, rocket=0, confused=0}, resolvedByUsername=null,
+ resolvedAt=null, createdAt=2025-06-01T08:04:40.567899Z, updatedAt=2025-06-01T08:04:40.567900Z, deletedAt=null)
