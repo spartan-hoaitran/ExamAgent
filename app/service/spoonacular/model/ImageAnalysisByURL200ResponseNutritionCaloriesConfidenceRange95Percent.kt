@@ -1,0 +1,1 @@
+// Placeholder content for ImageAnalysisByURL200ResponseNutritionCaloriesConfidenceRange95Percent.kt

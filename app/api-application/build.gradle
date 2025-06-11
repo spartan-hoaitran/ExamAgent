@@ -1,0 +1,24 @@
+// Placeholder content for build.gradle
+
+import org.openapitools.generator.gradle.plugin.tasks.GenerateTask
+
+plugins {
+  // ...existing code...
+  alias(libs.plugins.openapiGenerator)
+}
+
+dependencies {
+  // ...existing code...
+  implementation 'org.openapitools:openapi-generator-gradle-plugin:5.4.0'
+}
+
+// ...existing code...
+
+tasks.register("buildSpoonacularClient", GenerateTask) {
+  generatorName.set("kotlin")
+  inputSpec.set("$projectDir/src/main/resources/spoonacular-openapi-3.json")
+  outputDir.set("$projectDir/build/")
+  templateDir.set("$projectDir/src/main/resources/templates/kotlin-retrofit2")
+  apiPackage.set("com.dietfit.service.spoonacular.api")
+  modelPackage.set("com.dietfit.service.spoonacular.model")
+}
