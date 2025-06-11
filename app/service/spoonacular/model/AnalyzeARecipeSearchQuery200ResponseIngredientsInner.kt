@@ -1,0 +1,1 @@
+// Placeholder content for AnalyzeARecipeSearchQuery200ResponseIngredientsInner.kt
